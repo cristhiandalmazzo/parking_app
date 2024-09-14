@@ -65,7 +65,7 @@ def login():
 
 # Route for user logout
 @app.route('/logout')
-#@login_required
+@login_required
 def logout():
     logout_user()
     flash('You have been logged out.', 'info')
@@ -73,13 +73,13 @@ def logout():
 
 # Route for the user dashboard
 @app.route('/dashboard')
-#@login_required
+@login_required
 def dashboard():
     return render_template('dashboard.html')
 
 # Route to add a vehicle
 @app.route('/add_vehicle', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def add_vehicle():
     form = VehicleForm()
     if form.validate_on_submit():
@@ -97,7 +97,7 @@ def add_vehicle():
 
 # Route to make a reservation
 @app.route('/reserve', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def reserve():
     form = ReservationForm()
     form.vehicle_id.choices = [(v.id, f"{v.vehicle_model} ({v.license_plate})") for v in current_user.vehicles]
@@ -125,7 +125,7 @@ def reserve():
 
 # Route to check in
 @app.route('/checkin/<int:reservation_id>')
-#@login_required
+@login_required
 def checkin(reservation_id):
     reservation = Reservation.query.get_or_404(reservation_id)
     if reservation.user_id != current_user.id:
@@ -139,7 +139,7 @@ def checkin(reservation_id):
 
 # Route to check out
 @app.route('/checkout/<int:reservation_id>')
-#@login_required
+@login_required
 def checkout(reservation_id):
     reservation = Reservation.query.get_or_404(reservation_id)
     if reservation.user_id != current_user.id:

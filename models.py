@@ -44,3 +44,4 @@ class Reservation(db.Model):
     check_out_time = db.Column(db.DateTime, nullable=True)
     status = db.Column(db.String(10), default='Pending')
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    vehicle = db.relationship('Vehicle', backref='reservations')
