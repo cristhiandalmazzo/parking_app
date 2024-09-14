@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ current_user.full_name }}!</h2>
+
+    <h3>Your Vehicles</h3>
+    {% if current_user.vehicles %}
+        <ul class="list-group mb-4">
+            {% for vehicle in current_user.vehicles %}
+                <li class="list-group-item">
+                    <strong>{{ vehicle.vehicle_model }}</strong> ({{ vehicle.license_plate }}) - {{ vehicle.vehicle_size }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no vehicles added. <a href="{{ url_for('add_vehicle') }}">Add a vehicle</a></p>
+    {% endif %}
+
+    <h3>Your Reservations</h3>
+    {% if current_user.reservations %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Spot Number</th>
+                    <th>Status</th>
+                    <th>Check-In Date</th>
+                    <th>Check-Out Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in current_user.reservations %}
+                    <tr>
+                        <td>{{ reservation.vehicle.vehicle_model }} ({{ reservation.vehicle.license_plate }})</td>
+                        <td>{{ reservation.spot.spot_number }}</td>
+                        <td>{{ reservation.status }}</td>
+                        <td>{{ reservation.reservation_date_in.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ reservation.reservation_date_out.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if reservation.status == 'Confirmed' %}
+                                <a href="{{ url_for('checkin', reservation_id=reservation.id) }}" class="btn btn-success btn-sm">Check-In</a>
+                            {% elif reservation.status == 'Checked-in' %}
+                                <a href="{{ url_for('checkout', reservation_id=reservation.id) }}" class="btn btn-warning btn-sm">Check-Out</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no reservations. <a href="{{ url_for('reserve') }}">Make a reservation</a></p>
+    {% endif %}
+
+    <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Add Vehicle</a>
+    <a href="{{ url_for('reserve') }}" class="btn btn-secondary">Make Reservation</a>
+</div>
+{% endblock %}
